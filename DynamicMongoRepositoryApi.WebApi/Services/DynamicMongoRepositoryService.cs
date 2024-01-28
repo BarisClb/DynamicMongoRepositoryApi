@@ -43,6 +43,8 @@ namespace DynamicMongoRepositoryApi.WebApi.Services
             if (requestJson == null)
                 return ApiResponse<List<object>>.Fail(GenericDataHelper.InvalidRequest, (int)HttpStatusCode.BadRequest);
             var result = await _mongoRepository.GetByFieldsAsync(request.DatabaseName, request.CollectionName, requestJson);
+            if (result is null)
+                return ApiResponse<List<object>>.Fail(GenericDataHelper.InvalidRequest, (int)HttpStatusCode.BadRequest);
             return ApiResponse<List<object>>.Success(result, (int)HttpStatusCode.OK);
         }
 
@@ -66,9 +68,9 @@ namespace DynamicMongoRepositoryApi.WebApi.Services
             }
         }
 
-        public async Task<ApiResponse<object>> UpdateMongoEntity(UpdateMongoEntityRequest request)
+        public async Task<ApiResponse<object>> UpdateMongoEntity(UpdateMongoEntityByIdRequest request)
         {
-            if (string.IsNullOrEmpty(request.DatabaseName) || string.IsNullOrEmpty(request.CollectionName) && string.IsNullOrEmpty(request.Id))
+            if (string.IsNullOrEmpty(request.DatabaseName) || string.IsNullOrEmpty(request.CollectionName) || string.IsNullOrEmpty(request.Id))
                 return ApiResponse<object>.Fail(GenericDataHelper.InvalidRequest, (int)HttpStatusCode.BadRequest);
             var requestJson = ParseHelper.CheckIfJsonRequestIsValidAndParseRequestBody(request.RequestBody);
             if (requestJson == null)
@@ -79,9 +81,22 @@ namespace DynamicMongoRepositoryApi.WebApi.Services
             return ApiResponse<object>.Success(result, (int)HttpStatusCode.OK);
         }
 
+        public async Task<ApiResponse<object>> UpdateMongoEntityByFields(UpdateMongoEntityByFieldsRequest request)
+        {
+            if (string.IsNullOrEmpty(request.DatabaseName) || string.IsNullOrEmpty(request.CollectionName))
+                return ApiResponse<object>.Fail(GenericDataHelper.InvalidRequest, (int)HttpStatusCode.BadRequest);
+            var requestJson = ParseHelper.CheckIfJsonRequestIsValidAndParseRequestBody(request.RequestBody);
+            if (requestJson == null)
+                return ApiResponse<object>.Fail(GenericDataHelper.InvalidRequest, (int)HttpStatusCode.BadRequest);
+            var result = await _mongoRepository.UpdateByFieldsAsync(request.DatabaseName, request.CollectionName, requestJson);
+            if (result is null)
+                return ApiResponse<object>.Fail(GenericDataHelper.InvalidRequest, (int)HttpStatusCode.BadRequest);
+            return ApiResponse<object>.Success(result, (int)HttpStatusCode.OK);
+        }
+
         public async Task<ApiResponse<object>> DeleteMongoEntityById(DeleteMongoEntityByIdRequest request)
         {
-            if (string.IsNullOrEmpty(request.DatabaseName) || string.IsNullOrEmpty(request.CollectionName) && string.IsNullOrEmpty(request.Id))
+            if (string.IsNullOrEmpty(request.DatabaseName) || string.IsNullOrEmpty(request.CollectionName) || string.IsNullOrEmpty(request.Id))
                 return ApiResponse<object>.Fail(GenericDataHelper.InvalidRequest, (int)HttpStatusCode.BadRequest);
             var result = await _mongoRepository.DeleteByIdAsync(request.DatabaseName, request.CollectionName, request.Id);
             return ApiResponse<object>.Success(result, (int)HttpStatusCode.OK);
@@ -95,6 +110,8 @@ namespace DynamicMongoRepositoryApi.WebApi.Services
             if (requestJson == null)
                 return ApiResponse<object>.Fail(GenericDataHelper.InvalidRequest, (int)HttpStatusCode.BadRequest);
             var result = await _mongoRepository.DeleteByFieldsAsync(request.DatabaseName, request.CollectionName, requestJson);
+            if (result < 0)
+                return ApiResponse<object>.Fail(GenericDataHelper.InvalidRequest, (int)HttpStatusCode.BadRequest);
             return ApiResponse<object>.Success(result, (int)HttpStatusCode.OK);
         }
     }

@@ -47,7 +47,13 @@ namespace DynamicMongoRepositoryApi.WebApi.Controllers
         [HttpPut("/api/db/{databaseName}/{collectionName}/updateById/{id}")]
         public async Task<IActionResult> UpdateEntityById([FromHeader(Name = "api-key")][Required] string apiKeyHeader, string databaseName, string collectionName, string id, [FromBody] JsonElement requestBody)
         {
-            return Ok(await _dynamicMongoRepositoryService.UpdateMongoEntity(new UpdateMongoEntityRequest() { DatabaseName = databaseName, CollectionName = collectionName, Id = id, RequestBody = requestBody }));
+            return Ok(await _dynamicMongoRepositoryService.UpdateMongoEntity(new UpdateMongoEntityByIdRequest() { DatabaseName = databaseName, CollectionName = collectionName, Id = id, RequestBody = requestBody }));
+        }
+
+        [HttpPut("/api/db/{databaseName}/{collectionName}/updateByFields")]
+        public async Task<IActionResult> UpdateEntityByfİELDS([FromHeader(Name = "api-key")][Required] string apiKeyHeader, string databaseName, string collectionName, [FromBody] JsonElement requestBody)
+        {
+            return Ok(await _dynamicMongoRepositoryService.UpdateMongoEntityByFields(new UpdateMongoEntityByFieldsRequest() { DatabaseName = databaseName, CollectionName = collectionName, RequestBody = requestBody }));
         }
 
         [HttpDelete("/api/db/{databaseName}/{collectionName}/deleteById/{id}")]

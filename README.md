@@ -13,7 +13,7 @@ Türkçe versiyonunu [burada](https://github.com/BarisClb/DynamicMongoRepository
   - [Secret Key](#secret-key)
   - [Request Body](#request-body)
   - [ByFields Methods](#byfields-methods)
-  - [Update Method](#update-method)
+  - [Update Methods](#update-methods)
   - [Response Body](#response-body)
 
 ### Setting up the Project
@@ -70,14 +70,15 @@ Türkçe versiyonunu [burada](https://github.com/BarisClb/DynamicMongoRepository
 
 #### &nbsp;ByFields Methods
 
-&nbsp; Two keywords are introduced for this Methods: 
+&nbsp; Three Keywords are introduced for this Methods: 
+- "$eq" (equals)
 - "$gt" (greater than)
 - "$lt" (less than)  
-&nbsp; You need to place them in front of the key; otherwise, it will be processed as "equals".
+&nbsp; You need to place Keywords in front of the field Keys; otherwise, it will not be processed.
 
 ##### &nbsp; Examples
 
-- { "id": 1 }
+- { "$eqid": 1 }
   - id equals to 1
 - { "$gtPrice": 6 }
   - Price is greater than 6  
@@ -85,14 +86,22 @@ Türkçe versiyonunu [burada](https://github.com/BarisClb/DynamicMongoRepository
   - Price is less than 20  
 - { "Category": "Category1", "$gtQuantity": 5, "$ltPrice": 20 }
   - Category equals to Category1 and Quantity is greater than 5 and Price is less than 20
+- { "$Price": 20 }
+  - Invalid Comparison  
 
 ##### Important Note
 
 &emsp;&nbsp; Case sensitivity; _id can't be replaced by _Id. The same rule applies to the user defined fields, if you have an Object with the field { "Price": 5 }, requesting { "$gtprice": 4 } will not retrieve that Document.
 
-#### &nbsp;Update Method
+#### &nbsp;Update Methods
 
-&emsp;&nbsp; Update Method will only update the fields that are sent. If the Document is { "_id": 1, "Name": "Product1", "Price": 25 } and you have sent { "Price": 20 } to the Update Method, the updated Document will be: { "_id": 1, "Name": "Product1", "Price": 20 }.
+##### &nbsp; UpdateById
+
+&emsp;&nbsp; UpdateById Method will only update the fields that are sent and doesn't have Keywords in front of the Keys. If the Document is { "_id": 1, "Name": "Product1", "Price": 25 } and you have sent { "Price": 20 } along with the Id 1 to the UpdateById Method, the updated Document will be: { "_id": 1, "Name": "Product1", "Price": 20 }.
+
+##### &nbsp; UpdateByFields
+
+&emsp;&nbsp; UpdateByFields Method will only update the fields that are sent and doesn't have Keywords in front of the Keys. If you have these Documents { "_id": 1, "Name": "Product1", "Price": 25, "Quantity": 6 }, { "_id": 2, "Name": "Product2", "Price": 30, "Quantity": 4 }, { "_id": 3, "Name": "Product3", "Price": 34, "Quantity": 7 }, { "_id": 4, "Name": "Product4", "Price": 42, "Quantity": 9 } and you have sent { "$gtQuantity": 5, "$ltQuantity": 9, "Price": 20 } to the UpdateByFields Method, the updated Documents will be: { "_id": 1, "Name": "Product1", "Price": 20, "Quantity": 6 }, { "_id": 2, "Name": "Product2", "Price": 30, "Quantity": 4 }, { "_id": 3, "Name": "Product3", "Price": 20, "Quantity": 7 }, { "_id": 4, "Name": "Product4", "Price": 42, "Quantity": 9 }.
 
 #### Response Body
 

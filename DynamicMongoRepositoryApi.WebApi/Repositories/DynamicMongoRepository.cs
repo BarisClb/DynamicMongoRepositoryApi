@@ -1,6 +1,8 @@
 ﻿using DynamicMongoRepositoryApi.WebApi.Models.Settings;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using Newtonsoft.Json.Linq;
 
@@ -60,6 +62,34 @@ namespace DynamicMongoRepositoryApi.WebApi.Repositories
             return null;
         }
 
+        public async Task<object?> UpdateByFieldsAsync(string databaseName, string collectionName, string jsonString)
+        {
+            await initializeDatabase(databaseName, collectionName);
+
+            var jsonObject = JObject.Parse(jsonString);
+            var combinedFilterForUpdateByFields = generateFilters(JObject.Parse(jsonString));
+            if (combinedFilterForUpdateByFields is null)
+                return null;
+
+            foreach (var property in jsonObject.Properties().ToList())
+                if (property.Name.StartsWith("$eq") || property.Name.StartsWith("$gt") || property.Name.StartsWith("$lt"))
+                    property.Remove();
+
+            jsonString = jsonObject.ToString();
+            var document = BsonDocument.Parse(jsonString);
+            var update = new BsonDocument("$set", document);
+
+            var result = await _collection.UpdateManyAsync(combinedFilterForUpdateByFields, update);
+            if (result.ModifiedCount > 0)
+            {
+                JObject modifiedObject = new JObject();
+                foreach (var property in jsonObject.Properties())
+                    modifiedObject[$"$eq{property.Name}"] = property.Value;
+                return await GetByFieldsAsync(databaseName, collectionName, modifiedObject.ToString());
+            }
+            return new();
+        }
+
         public async Task<int> DeleteByIdAsync(string databaseName, string collectionName, string id)
         {
             await initializeDatabase(databaseName, collectionName);
@@ -72,6 +102,8 @@ namespace DynamicMongoRepositoryApi.WebApi.Repositories
         {
             await initializeDatabase(databaseName, collectionName);
             var combinedFilter = generateFilters(JObject.Parse(jsonString));
+            if (combinedFilter is null)
+                return null;
             var result = (await _collection.FindAsync(combinedFilter)).ToList();
             if (result is null || result.Count == 0)
                 return new();
@@ -84,6 +116,8 @@ namespace DynamicMongoRepositoryApi.WebApi.Repositories
         {
             await initializeDatabase(databaseName, collectionName);
             var combinedFilter = generateFilters(JObject.Parse(jsonString));
+            if (combinedFilter is null)
+                return -1;
             var response = await _collection.DeleteManyAsync(combinedFilter);
             return response.IsAcknowledged ? (int)response.DeletedCount : 0;
         }
@@ -106,9 +140,13 @@ namespace DynamicMongoRepositoryApi.WebApi.Repositories
                     return Builders<BsonDocument>.Filter.Gt(fieldName.Substring(3), fieldValue);
                 else if (fieldName.Contains("$lt"))
                     return Builders<BsonDocument>.Filter.Lt(fieldName.Substring(3), fieldValue);
-                return Builders<BsonDocument>.Filter.Eq(fieldName, fieldValue);
-            });
-            return Builders<BsonDocument>.Filter.And(filters);
+                else if (fieldName.Contains("$eq"))
+                    return Builders<BsonDocument>.Filter.Eq(fieldName.Substring(3), fieldValue);
+                return default;
+            }).Where(filter => filter != null);
+            if (filters.Count() > 0)
+                return Builders<BsonDocument>.Filter.And(filters);
+            return null;
         }
 
         private object inferType(JToken token)
@@ -172,6 +210,14 @@ namespace DynamicMongoRepositoryApi.WebApi.Repositories
                 default:
                     return bsonValue.AsString;
             }
+        }
+
+        private bool hasFilters(FilterDefinition<BsonDocument> filter)
+        {
+            if (filter == null)
+                return false;
+            var renderedFilter = filter.Render(new BsonDocumentSerializer(), new BsonSerializerRegistry());
+            return renderedFilter.ElementCount > 0 && !(renderedFilter.ElementCount == 1 && renderedFilter.Names.Contains("$and"));
         }
     }
 }

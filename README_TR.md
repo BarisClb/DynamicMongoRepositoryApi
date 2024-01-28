@@ -13,7 +13,7 @@ English version can be found [here](https://github.com/BarisClb/DynamicMongoRepo
   - [Secret Key](#secret-key)
   - [Request Body](#request-body)
   - [ByFields Methodları](#byfields-methodları)
-  - [Update Methodu](#update-methodu)
+  - [Update Methodları](#update-methodları)
   - [Response Body](#response-body)
 
 ### Proje Kurulumu
@@ -70,14 +70,14 @@ English version can be found [here](https://github.com/BarisClb/DynamicMongoRepo
 
 #### &nbsp;ByFields Methodları
 
-&nbsp; Bu Methodlar için iki adet anahtar kelime tanımlanmıştır: 
+&nbsp; Bu Methodlar için üç adet Anahtar Kelime tanımlanmıştır: 
 - "$gt" (greater than)
 - "$lt" (less than)  
-&nbsp; Bu anahtar kelimeler, Object içerisindeki Key'lerin önüne koyulmalıdır, aksi takdirde karşılaştırma için "eşittir" olarak kabul edilecektir.
+&nbsp; Bu Anahtar Kelimeler, Object içerisindeki Keylerin önüne koyulmalıdır, aksi takdirde karşılaştırma için "eşittir" olarak kabul edilecektir.
 
 ##### &nbsp; Örnekler
 
-- { "id": 1 }
+- { "$eqid": 1 }
   - id 1'e eşit ise
 - { "$gtPrice": 6 }
   - Price 6'dan büyük ise
@@ -85,14 +85,22 @@ English version can be found [here](https://github.com/BarisClb/DynamicMongoRepo
   - Price 20'den küçük ise
 - { "Category": "Category1", "$gtQuantity": 5, "$ltPrice": 20 }
   - Category Category1'e eşit ve Quantity is 5'ten ve Price 20'den küçük ise
+- { "$Price": 20 }
+  - Geçersiz Karşılaştırma  
 
 ##### Önemli Not
 
 &emsp;&nbsp; Büyük-Küçük harf hassassiyeti; _Id, _id yerine geçemez. Aynı kural, kullanıcının tanımladığı fieldlar için de geçerlidir, eğer bir field { "Price": 5 } olarak belirlendi ise, { "$gtprice": 4 } karşılaştırması bu Dökümanı getirmeyecektir.
 
-#### &nbsp;Update Methodu
+#### &nbsp;Update Methodları
 
-&emsp;&nbsp; Update Methodu yalnızca kendisine gönderilen fieldlar için bu işlemi gerçekleştirecektir. Eğer Databasedeki Döküman { "_id": 1, "Name": "Product1", "Price": 25 } ise ve Update Methoduna { "Price": 20 } gönderiliyor ise, güncellenmiş Döküman { "_id": 1, "Name": "Product1", "Price": 20 } olacaktır.
+##### &nbsp; UpdateById
+
+&emsp;&nbsp; UpdateById Methodu yalnızca kendisine gönderilen ve başında Anahtar Kelime olmayan fieldlar için Update işlemi gerçekleştirecektir. Eğer Databasedeki Döküman { "_id": 1, "Name": "Product1", "Price": 25 } ise ve Update Methoduna Id 1 ile birlikte { "Price": 20 } gönderiliyor ise, güncellenmiş Döküman { "_id": 1, "Name": "Product1", "Price": 20 } olacaktır.
+
+##### &nbsp; UpdateByFields
+
+&emsp;&nbsp; UpdateByFields Methodu yalnızca kendisine gönderilen ve başında Anahtar Kelime olmayan fieldlar için Update işlemi gerçekleştirecektir. Eğer Databasedeki Dökümanlarınız { "_id": 1, "Name": "Product1", "Price": 25, "Quantity": 6 }, { "_id": 2, "Name": "Product2", "Price": 30, "Quantity": 4 }, { "_id": 3, "Name": "Product3", "Price": 34, "Quantity": 7 }, { "_id": 4, "Name": "Product4", "Price": 42, "Quantity": 9 } ise ve UpdateByFields Methoduna { "$gtQuantity": 5, "$ltQuantity": 9, "Price": 20 } isteğini gönderdiyseniz, güncellenmiş Dökümanlar: { "_id": 1, "Name": "Product1", "Price": 20, "Quantity": 6 }, { "_id": 2, "Name": "Product2", "Price": 30, "Quantity": 4 }, { "_id": 3, "Name": "Product3", "Price": 20, "Quantity": 7 }, { "_id": 4, "Name": "Product4", "Price": 42, "Quantity": 9 } olacaktır.
 
 #### Response Body
 
