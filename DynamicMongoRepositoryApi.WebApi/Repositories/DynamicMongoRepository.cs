@@ -211,13 +211,5 @@ namespace DynamicMongoRepositoryApi.WebApi.Repositories
                     return bsonValue.AsString;
             }
         }
-
-        private bool hasFilters(FilterDefinition<BsonDocument> filter)
-        {
-            if (filter == null)
-                return false;
-            var renderedFilter = filter.Render(new BsonDocumentSerializer(), new BsonSerializerRegistry());
-            return renderedFilter.ElementCount > 0 && !(renderedFilter.ElementCount == 1 && renderedFilter.Names.Contains("$and"));
-        }
     }
 }

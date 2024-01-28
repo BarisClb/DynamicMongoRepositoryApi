@@ -51,7 +51,7 @@ namespace DynamicMongoRepositoryApi.WebApi.Controllers
         }
 
         [HttpPut("/api/db/{databaseName}/{collectionName}/updateByFields")]
-        public async Task<IActionResult> UpdateEntityByfİELDS([FromHeader(Name = "api-key")][Required] string apiKeyHeader, string databaseName, string collectionName, [FromBody] JsonElement requestBody)
+        public async Task<IActionResult> UpdateEntityByFields([FromHeader(Name = "api-key")][Required] string apiKeyHeader, string databaseName, string collectionName, [FromBody] JsonElement requestBody)
         {
             return Ok(await _dynamicMongoRepositoryService.UpdateMongoEntityByFields(new UpdateMongoEntityByFieldsRequest() { DatabaseName = databaseName, CollectionName = collectionName, RequestBody = requestBody }));
         }
