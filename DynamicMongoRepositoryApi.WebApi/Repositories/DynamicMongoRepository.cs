@@ -1,8 +1,6 @@
 ﻿using DynamicMongoRepositoryApi.WebApi.Models.Settings;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using Newtonsoft.Json.Linq;
 
