@@ -1,0 +1,23 @@
+version: '3.4'
+
+services:
+  dynamic-mongo-repository-api:
+    image: dynamic-mongo-repository-api
+    build:
+      context: .
+      dockerfile: DynamicMongoRepositoryApi.WebApi/Dockerfile
+    networks:
+        - dynamic-mongo-repository-api
+  
+  dynamic-mongo-repository-api-mongodb:
+    image: mongo:6
+    networks:
+        - dynamic-mongo-repository-api
+      
+volumes: 
+    dynamic-mongo-repository-api-mongovolume:
+
+networks:
+  dynamic-mongo-repository-api:
+    name: dynamic-mongo-repository-api-network
+    driver: bridge

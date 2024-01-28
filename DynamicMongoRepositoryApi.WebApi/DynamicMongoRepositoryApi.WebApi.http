@@ -1,0 +1,6 @@
+@DynamicMongoRepositoryApi.WebApi_HostAddress = http://localhost:5015
+
+GET {{DynamicMongoRepositoryApi.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

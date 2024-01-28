@@ -1,0 +1,20 @@
+version: '3.4'
+
+services:
+  dynamic-mongo-repository-api:
+    container_name: dynamic-mongo-repository-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - "DynamicMongoRepositoryApiSettings__MongoDbConnectionString=mongodb://dynamic-mongo-repository-api-mongodb:27017"
+    depends_on:
+      - dynamic-mongo-repository-api-mongodb
+    ports:
+      - "8008:8080"
+
+  dynamic-mongo-repository-api-mongodb:
+    container_name: dynamic-mongo-repository-api-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - dynamic-mongo-repository-api-mongovolume:/data/db
+      
