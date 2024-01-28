@@ -3,7 +3,7 @@ This API leverages MongoDB's Document-Based nature to dynamically manipulate Dat
 
 ### Languages
 
-Türkçe versiyonunu [burada](https://github.com/BarisClb/DynamicMongoRepositoryApi/blob/master/README-TR.md) okuyabilirsiniz.
+Türkçe versiyonunu [burada](https://github.com/BarisClb/DynamicMongoRepositoryApi/blob/master/README_TR.md) okuyabilirsiniz.
 
 ### Anchor Links:
 

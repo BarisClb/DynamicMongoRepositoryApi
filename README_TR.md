@@ -3,7 +3,7 @@ Bu API, MongoDB'nin Döküman-Tabanlı yapısından faydalanarak, önceden tanı
 
 ### Languages
 
-English version can be found [here](https://github.com/BarisClb/DynamicMongoRepositoryApi/blob/master/README.md).
+English version can be read [here](https://github.com/BarisClb/DynamicMongoRepositoryApi/blob/master/README.md).
 
 ### Anchor Links:
 
