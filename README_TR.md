@@ -70,9 +70,11 @@ English version can be read [here](https://github.com/BarisClb/DynamicMongoRepos
 
 #### &nbsp;ByFields Methodları
 
-&nbsp; Bu Methodlar için üç adet Anahtar Kelime tanımlanmıştır: 
-- "$gt" (greater than)
-- "$lt" (less than)  
+&nbsp; Bu Methodlar için üç adet Anahtar Kelime tanımlanmıştır:
+- "$eq" (equals)(eşittir)
+- "$gt" (greater than)(büyüktür)
+- "$lt" (less than)(küçüktür)
+
 &nbsp; Bu Anahtar Kelimeler, Object içerisindeki Keylerin önüne koyulmalıdır, aksi takdirde karşılaştırma için "eşittir" olarak kabul edilecektir.
 
 ##### &nbsp; Örnekler
@@ -83,9 +85,9 @@ English version can be read [here](https://github.com/BarisClb/DynamicMongoRepos
   - Price 6'dan büyük ise
 - { "$ltPrice": 20 }
   - Price 20'den küçük ise
-- { "Category": "Category1", "$gtQuantity": 5, "$ltPrice": 20 }
-  - Category Category1'e eşit ve Quantity is 5'ten ve Price 20'den küçük ise
-- { "$Price": 20 }
+- { "$eqCategory": "Category1", "$gtQuantity": 5, "$ltPrice": 20 }
+  - Category Category1'e eşit ve Quantity is 5'ten büyük ve Price 20'den küçük ise
+- { "Price": 20 }
   - Geçersiz Karşılaştırma  
 
 ##### Önemli Not

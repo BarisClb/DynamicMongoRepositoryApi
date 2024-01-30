@@ -70,10 +70,11 @@ Türkçe versiyonunu [burada](https://github.com/BarisClb/DynamicMongoRepository
 
 #### &nbsp;ByFields Methods
 
-&nbsp; Three Keywords are introduced for this Methods: 
+&nbsp; Three Keywords are introduced for this Methods:  
 - "$eq" (equals)
 - "$gt" (greater than)
-- "$lt" (less than)  
+- "$lt" (less than)
+
 &nbsp; You need to place Keywords in front of the field Keys; otherwise, it will not be processed.
 
 ##### &nbsp; Examples
@@ -84,9 +85,9 @@ Türkçe versiyonunu [burada](https://github.com/BarisClb/DynamicMongoRepository
   - Price is greater than 6  
 - { "$ltPrice": 20 }
   - Price is less than 20  
-- { "Category": "Category1", "$gtQuantity": 5, "$ltPrice": 20 }
+- { "$eqCategory": "Category1", "$gtQuantity": 5, "$ltPrice": 20 }
   - Category equals to Category1 and Quantity is greater than 5 and Price is less than 20
-- { "$Price": 20 }
+- { "Price": 20 }
   - Invalid Comparison  
 
 ##### Important Note
